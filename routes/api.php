@@ -14,6 +14,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group([
+    'prefix' => 'movie'
+], function() {
+    Route::get('/trending', [\App\Http\Controllers\Api\MovieController::class, 'getTrendingMovies']);
+    Route::get('/search/{query}', [\App\Http\Controllers\Api\MovieController::class, 'searchMovie']);
+    // Route::get('/search/{query}', [\App\Http\Controllers\Api\MovieController::class, 'searchMovie']);
+    Route::get('/filter/{filter}', [\App\Http\Controllers\Api\MovieController::class, 'filterMovieByGenre']);
 });
