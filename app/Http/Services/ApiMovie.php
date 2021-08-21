@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 class ApiMovie
@@ -12,6 +13,17 @@ class ApiMovie
     public function getTrendingMovies()
     {
         $url = "{$this->url_base}/trending/movie/day";
+
+        $response = Http::get($url, [
+            'api_key' => env('API_KEY_MOVIE')
+        ]);
+
+        return json_decode($response->body(), true);
+    }
+
+    public function findMovieById(int $id)
+    {
+        $url = "{$this->url_base}/movie/{$id}";
 
         $response = Http::get($url, [
             'api_key' => env('API_KEY_MOVIE')
@@ -42,5 +54,40 @@ class ApiMovie
         ]);
 
         return json_decode($response->body(), true);
+    }
+    
+    public function getGenresMovies()
+    {
+        $url = "{$this->url_base}/genre/movie/list";
+    
+        $response = Http::get($url, [
+            'api_key' => env('API_KEY_MOVIE'),
+        ]);
+
+        return json_decode($response->body(), true);
+    }
+
+    public function findGenreById(int $id)
+    {
+        if (! cache('all_genres')) {
+            $genres = $this->getGenresMovies();
+
+            Cache::rememberForever('all_genres', function() use ($genres) {
+                return $genres['genres'];
+            });
+        }
+
+        $genres = array_filter(
+            cache('all_genres'),
+            function($genre) use ($id) {
+                return $genre['id'] == $id;
+            }
+        );
+
+        if (count($genres)){
+            return array_pop($genres);
+        }
+
+        return ['id' => '', 'name' => ''];
     }
 }
