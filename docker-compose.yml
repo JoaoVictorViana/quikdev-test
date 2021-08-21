@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+  laravel-app:
+    build:
+      args:
+        user: joao
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    volumes:
+      - ./:/var/www/
+    working_dir: /var/www/
+    networks:
+      - quikdev
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - 8000:80
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx:/etc/nginx/conf.d
+    networks:
+      - quikdev
+networks:
+  quikdev:
+    driver: bridge    
