@@ -12,15 +12,15 @@ class MovieController extends Controller
 {
     public function getTrendingMovies()
     {
-        // $movies = ApiMovie::getTrendingMovies();
+        $movies = ApiMovie::getTrendingMovies();
 
-        // if (isset($movies['results'])) {
-        //     Cache::forget('trending_movies');
-        //     Cache::rememberForever('trending_movies', function() use ($movies) {
-        //         return $movies['results'];
-        //     });
-        // }
-
+        if (isset($movies['results'])) {
+            Cache::forget('trending_movies');
+            Cache::rememberForever('trending_movies', function() use ($movies) {
+                return $movies['results'];
+            });
+        }
+        
         return MovieResource::collection(cache('trending_movies'));
     }
 
