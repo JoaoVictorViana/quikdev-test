@@ -2,9 +2,6 @@ version: "3.9"
 services:
   laravel-app:
     build:
-      args:
-        user: joao
-        uid: 1000
       context: ./
       dockerfile: Dockerfile
     restart: unless-stopped
@@ -25,4 +22,4 @@ services:
       - quikdev
 networks:
   quikdev:
-    driver: bridge    
+    driver: bridge  
